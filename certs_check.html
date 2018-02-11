@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SSL Certs expiration</title>
+</head>
+<body style="background-color: lightblue;">
+<h1 style="color: navy;text-align: center;font-family: 'Helvetica Neue', sans-serif;font-size: 20px;font-weight: bold;">SSL Certs expiration checker</h1>
+<table style="background-color: #C5E1E7;padding: 10px;box-shadow: 5px 10px 18px #888888;margin-left: auto ;margin-right: auto ;border: 1px solid black;">
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Site</th>
+<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Expiration date</th>
+<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Days left</th>
+<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Status</th>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">linux.com</td>
+<td style="padding: 8px;background-color: #33FF4F;">Dec 28 14:42:52 2018 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">319</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">kernel.org</td>
+<td style="padding: 8px;background-color: #33FF4F;">Oct 11 23:59:59 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">607</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">gnu.org</td>
+<td style="padding: 8px;background-color: #FF8F32;">May  2 21:51:01 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">80</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">debian.org</td>
+<td style="padding: 8px;background-color: #FF8F32;">Apr  8 00:40:07 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">55</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FFE032;">ubuntu.com</td>
+<td style="padding: 8px;background-color: #FFE032;">Aug  8 12:00:00 2018 GMT</td>
+<td style="padding: 8px;background-color: #FFE032;">177</td>
+<td style="padding: 8px;background-color: #FFE032;">Warning</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">github.com</td>
+<td style="padding: 8px;background-color: #FF8F32;">May 17 12:00:00 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">94</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">google.es</td>
+<td style="padding: 8px;background-color: #FF8F32;">Apr 17 13:36:00 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">64</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">redhat.com</td>
+<td style="padding: 8px;background-color: #33FF4F;">Jul 19 12:00:00 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">522</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">superuser.com</td>
+<td style="padding: 8px;background-color: #33FF4F;">Aug 14 12:00:00 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">548</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">youtube.com</td>
+<td style="padding: 8px;background-color: #FF8F32;">Apr 17 13:37:00 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">64</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">stackoverflow.com</td>
+<td style="padding: 8px;background-color: #33FF4F;">Aug 14 12:00:00 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">548</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">stackexchange.com</td>
+<td style="padding: 8px;background-color: #33FF4F;">Aug 14 12:00:00 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">548</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">wikipedia.org</td>
+<td style="padding: 8px;background-color: #33FF4F;">Jan 24 12:00:00 2019 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">346</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #33FF4F;">python.org</td>
+<td style="padding: 8px;background-color: #33FF4F;">Feb  2 23:59:59 2020 GMT</td>
+<td style="padding: 8px;background-color: #33FF4F;">721</td>
+<td style="padding: 8px;background-color: #33FF4F;">Ok</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">codecademy.com</td>
+<td style="padding: 8px;background-color: #FF8F32;">Jun 20 23:59:59 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">129</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">packtpub.com</td>
+<td style="padding: 8px;background-color: #FF8F32;">Jul  1 00:37:31 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">139</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FFE032;">reddit.com</td>
+<td style="padding: 8px;background-color: #FFE032;">Aug 21 12:00:00 2018 GMT</td>
+<td style="padding: 8px;background-color: #FFE032;">190</td>
+<td style="padding: 8px;background-color: #FFE032;">Warning</td>
+</tr>
+<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
+<td style="padding: 8px;background-color: #FF8F32;">mysql.com</td>
+<td style="padding: 8px;background-color: #FF8F32;">Mar 31 23:59:59 2018 GMT</td>
+<td style="padding: 8px;background-color: #FF8F32;">48</td>
+<td style="padding: 8px;background-color: #FF8F32;">Alert</td>
+</tr>
+</table>
+</body>
+</html>
+
