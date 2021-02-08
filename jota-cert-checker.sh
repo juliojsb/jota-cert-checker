@@ -16,18 +16,21 @@
 sites_list="$1"
 sitename=""
 html_file="certs_check.html"
+img_file="certs_check.jpg"
 current_date=$(date +%s)
 end_date=""
 days_left=""
 certificate_last_day=""
-warning_days="30"
-alert_days="15"
+warning_days="300"
+alert_days="150"
 # Terminal colors
 ok_color="\e[38;5;40m"
 warning_color="\e[38;5;220m"
 alert_color="\e[38;5;208m"
 expired_color="\e[38;5;196m"
 end_of_color="\033[0m"
+# Slack
+slack_token="your_slack_token"
 
 #
 # FUNCTIONS
@@ -146,6 +149,7 @@ howtouse(){
 		-f [ sitelist file ]          list of sites (domains) to check
 		-o [ html | terminal ]        output (can be html or terminal)
 		-m [ mail ]                   mail address to send the graphs to
+		-s [ slack_channel ]          slack channel to send the report to
 		-h                            help
 	
 	Examples:
@@ -159,6 +163,9 @@ howtouse(){
 		# Using HTML mode and sending results via email
 		./jota-cert-checker.sh -f sitelist -o html -m mail@example.com
 
+		# Using HTML mode and sending results via email
+		./jota-cert-checker.sh -f sitelist -o html -s my_slack_channel
+
 	EOF
 }
 
@@ -170,7 +177,7 @@ if [ "$#" -eq 0 ];then
 	howtouse
 
 elif [ "$#" -ne 0 ];then
-	while getopts ":f:o:m:h" opt; do
+	while getopts ":f:o:m:s:h" opt; do
 		case $opt in
 			"f")
 				sites_list="$OPTARG"
@@ -193,6 +200,13 @@ elif [ "$#" -ne 0 ];then
 					echo "Mail option is only used with HTML mode"
 				fi
 				;;
+			"s")
+				if [ "$output" == "html" ];then
+					slack_to="$OPTARG"
+				else
+					echo "Slack option is only used with HTML mode"
+				fi
+				;;
 			\?)
 				echo "Invalid option: -$OPTARG" >&2
 				howtouse
@@ -213,5 +227,16 @@ elif [ "$#" -ne 0 ];then
 	# Send mail if specified
 	if [[ $mail_to ]];then
 		mutt -e 'set content_type="text/html"' $mail_to -s "SSL certs expiration check" < $html_file
+	fi
+
+	# Send slack if specified
+	if [[ $slack_to ]];then
+		python3 html2img.py "${html_file}" "${img_file}"
+		curl -s \
+			--form-string channels="${slack_to}" \
+			-F file="@${img_file}" \
+			-F filename="@${img_file}" \
+			-F token="${slack_token}" \
+			https://slack.com/api/files.upload
 	fi
 fi
