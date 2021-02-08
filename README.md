@@ -9,7 +9,10 @@ The script can be launched in two modes:
 * **Terminal**: Output is displayed in your terminal
 * **HTML**: the script generates an HTML file (called **certs_check.html** by default) that can be opened with your browser. 
 
-Optionally, you can also embed the HTML and send it to an email (you will need to install **mutt** if you use this option)
+Optionally, you can also embed the HTML and send it via:
+
+* **email**: you will need to install **mutt** if you use this option
+* **slack**: install **imgkit** via pip and **wkhtmltopdf** using your distribution package manager (in RHEL/CentOS you will need to enable EPEL first)
 
 ## Usage
 
@@ -61,3 +64,8 @@ In HTML mode and sending the result to an email:
 Checking our email we will see:
 
 ![screenshot from 2018-02-11 20-30-11](https://user-images.githubusercontent.com/12804701/36078161-891bb566-0f73-11e8-984c-1cd65127a8e4.png)
+
+Also in HTML mode and sending the result to a slack channel:
+```bash
+./jota-cert-checker.sh -f sitelist -o html -s my_slack_channel
+```
