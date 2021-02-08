@@ -12,7 +12,7 @@ The script can be launched in two modes:
 Optionally, you can also embed the HTML and send it via:
 
 * **email**: you will need to install **mutt** if you use this option
-* **slack**: install **imgkit** via pip and **wkhtmltopdf** using your distribution package manager (in RHEL/CentOS you will need to enable EPEL first)
+* **slack**: install **imgkit** via pip and **wkhtmltopdf** using your distribution package manager (in RHEL/CentOS you will need to enable EPEL first) Don't forget to configure you Slack Token the **slack_token** variable of jota-cert-checker.sh script
 
 ## Usage
 
