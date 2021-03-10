@@ -113,30 +113,33 @@ html_mode(){
 }
 
 terminal_mode(){
-	printf "\n| %-30s | %-30s | %-10s | %-5s %s\n" "SITE" "EXPIRATION DAY" "DAYS LEFT" "STATUS"
+	printf "\n| %-30s | %-30s | %-30s | %-10s | %-5s %s\n" "SITE" "ISSUER" "EXPIRATION DAY" "DAYS LEFT" "STATUS"
 
 	while read site;do
 		sitename=$(echo $site | cut -d ":" -f1)
-		certificate_last_day=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
-		openssl x509 -noout -enddate 2>/dev/null | cut -d "=" -f2)
+		cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
+		openssl x509 -noout -enddate -issuer 2>/dev/null)
+		certificate_last_day=$(echo -e "$cert_out" | grep notAfter= | cut -d"=" -f2)
+		issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
+		issuer_trim=$(echo -e "$issuer" | cut -c -30)
 		end_date=$(date +%s -d "$certificate_last_day")
 		days_left=$(((end_date - current_date) / 86400))
 
 		if [ "$days_left" -gt "$warning_days" ];then
-			printf "${ok_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$certificate_last_day" "$days_left" "Ok"
+			printf "${ok_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Ok"
 
 		elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
-			printf "${warning_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$certificate_last_day" "$days_left" "Warning"
+			printf "${warning_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Warning"
 
 		elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
-			printf "${alert_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$certificate_last_day" "$days_left" "Alert"
+			printf "${alert_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Alert"
 
 		elif [ "$days_left" -le 0 ];then
-			printf "${expired_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$certificate_last_day" "$days_left" "Expired"
+			printf "${expired_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Expired"
 		fi
 
 	done < $sites_list
