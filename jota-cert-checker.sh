@@ -14,6 +14,7 @@
 #
 
 sites_list="$1"
+timeout="5"
 sitename=""
 html_file="certs_check.html"
 img_file="certs_check.jpg"
@@ -117,38 +118,46 @@ terminal_mode(){
 
 	while read site;do
 		sitename=$(echo $site | cut -d ":" -f1)
-		cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
-		openssl x509 -noout -enddate -issuer 2>/dev/null)
-		certificate_last_day=$(echo -e "$cert_out" | grep notAfter= | cut -d"=" -f2)
-		issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
-		issuer_trim=$(echo -e "$issuer" | cut -c -30)
-		end_date=$(date +%s -d "$certificate_last_day")
-		days_left=$(((end_date - current_date) / 86400))
+		port=$(echo $site | cut -d ":" -f2)
+		timeout $timeout bash -c "cat < /dev/null > /dev/tcp/$sitename/$port"
+		if [ "$?" = 0 ];then
+		  cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
+		  openssl x509 -noout -enddate -issuer 2>/dev/null)
+			certificate_last_day=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
+			openssl x509 -noout -enddate 2>/dev/null | cut -d "=" -f2)
+		  issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
+		  issuer_trim=$(echo -e "$issuer" | cut -c -30)
+			end_date=$(date +%s -d "$certificate_last_day")
+			days_left=$(((end_date - current_date) / 86400))
+		
+			if [ "$days_left" -gt "$warning_days" ];then
+				printf "${ok_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+				"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Ok"
 
-		if [ "$days_left" -gt "$warning_days" ];then
-			printf "${ok_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Ok"
+			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
+				printf "${warning_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+				"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Warning"
 
-		elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
-			printf "${warning_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Warning"
+			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
+				printf "${alert_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+				"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Alert"
 
-		elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
-			printf "${alert_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Alert"
-
-		elif [ "$days_left" -le 0 ];then
-			printf "${expired_color}| %-30s | %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Expired"
-		fi
-
+			elif [ "$days_left" -le 0 ];then
+				printf "${expired_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+				"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Expired"
+			fi
+    else
+        printf "${unknown_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+        "$sitename" "n/a" "n/a" "Unknown"
+      fi
 	done < $sites_list
 
 	printf "\n %-10s" "STATUS LEGEND"
 	printf "\n ${ok_color}%-8s${end_of_color} %-30s" "Ok" "- More than ${warning_days} days left until the certificate expires"
 	printf "\n ${warning_color}%-8s${end_of_color} %-30s" "Warning" "- The certificate will expire in less than ${warning_days} days"
 	printf "\n ${alert_color}%-8s${end_of_color} %-30s" "Alert" "- The certificate will expire in less than ${alert_days} days"
-	printf "\n ${expired_color}%-8s${end_of_color} %-30s\n\n" "Expired" "- The certificate has already expired"
+        printf "\n ${expired_color}%-8s${end_of_color} %-30s" "Expired" "- The certificate has already expired"
+        printf "\n ${unknown_color}%-8s${end_of_color} %-30s\n\n" "Unknown" "- The site with defined port could not be reached"
 }
 
 howtouse(){
