@@ -29,6 +29,7 @@ ok_color="\e[38;5;40m"
 warning_color="\e[38;5;220m"
 alert_color="\e[38;5;208m"
 expired_color="\e[38;5;196m"
+unknown_color="\e[38;5;246m"
 end_of_color="\033[0m"
 # Slack
 slack_token="your_slack_token"
@@ -121,12 +122,12 @@ terminal_mode(){
 		port=$(echo $site | cut -d ":" -f2)
 		timeout $timeout bash -c "cat < /dev/null > /dev/tcp/$sitename/$port"
 		if [ "$?" = 0 ];then
-		  cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
-		  openssl x509 -noout -enddate -issuer 2>/dev/null)
+			cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
+			openssl x509 -noout -enddate -issuer 2>/dev/null)
 			certificate_last_day=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | \
 			openssl x509 -noout -enddate 2>/dev/null | cut -d "=" -f2)
-		  issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
-		  issuer_trim=$(echo -e "$issuer" | cut -c -30)
+			issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
+			issuer_trim=$(echo -e "$issuer" | cut -c -30)
 			end_date=$(date +%s -d "$certificate_last_day")
 			days_left=$(((end_date - current_date) / 86400))
 		
@@ -146,18 +147,18 @@ terminal_mode(){
 				printf "${expired_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
 				"$sitename" "$issuer_trim" "$certificate_last_day" "$days_left" "Expired"
 			fi
-    else
-        printf "${unknown_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
-        "$sitename" "n/a" "n/a" "Unknown"
-      fi
+		else
+			printf "${unknown_color}| %-30s | %-30s | %-10s | %-5s %s\n${end_of_color}" \
+			"$sitename" "n/a" "n/a" "n/a" "Unknown"
+		fi
 	done < $sites_list
 
 	printf "\n %-10s" "STATUS LEGEND"
 	printf "\n ${ok_color}%-8s${end_of_color} %-30s" "Ok" "- More than ${warning_days} days left until the certificate expires"
 	printf "\n ${warning_color}%-8s${end_of_color} %-30s" "Warning" "- The certificate will expire in less than ${warning_days} days"
 	printf "\n ${alert_color}%-8s${end_of_color} %-30s" "Alert" "- The certificate will expire in less than ${alert_days} days"
-        printf "\n ${expired_color}%-8s${end_of_color} %-30s" "Expired" "- The certificate has already expired"
-        printf "\n ${unknown_color}%-8s${end_of_color} %-30s\n\n" "Unknown" "- The site with defined port could not be reached"
+	printf "\n ${expired_color}%-8s${end_of_color} %-30s" "Expired" "- The certificate has already expired"
+	printf "\n ${unknown_color}%-8s${end_of_color} %-30s\n\n" "Unknown" "- The site with defined port could not be reached"
 }
 
 howtouse(){
