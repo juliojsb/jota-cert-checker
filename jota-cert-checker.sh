@@ -15,15 +15,15 @@
 
 sites_list="$1"
 timeout="5"
-sitename=""
-html_file="certs_check.html"
-img_file="certs_check.jpg"
+sitename="${sitename:-}"
+html_file="${html_file:-certs_check.html}"
+img_file="${img_file:-certs_check.jpg}"
 current_date=$(date +%s)
-end_date=""
-days_left=""
-certificate_last_day=""
-warning_days="300"
-alert_days="150"
+end_date="${end_date:-}"
+days_left="${days_left:-}"
+certificate_last_day="${certificate_last_day:-}"
+warning_days="${warning_days:-300}"
+alert_days="${alert_days:-150}"
 # Terminal colors
 ok_color="\e[38;5;40m"
 warning_color="\e[38;5;220m"
@@ -32,7 +32,7 @@ expired_color="\e[38;5;196m"
 unknown_color="\e[38;5;246m"
 end_of_color="\033[0m"
 # Slack
-slack_token="your_slack_token"
+slack_token="${slack_token:-your_slack_token}"
 
 #
 # FUNCTIONS
