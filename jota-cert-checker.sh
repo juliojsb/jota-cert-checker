@@ -64,9 +64,8 @@ html_mode(){
 		port=$(echo $site | cut -d ":" -f2)
 		timeout $timeout bash -c "cat < /dev/null > /dev/tcp/$sitename/$port"
 		if [ "$?" = 0 ];then
-			cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -enddate -issuer 2>/dev/null)
 			certificate_last_day=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d "=" -f2)
-			issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2-)
+			issuer=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -issuer)
 			end_date=$(date +%s -d "$certificate_last_day")
 			days_left=$(((end_date - current_date) / 86400))
 
@@ -126,37 +125,36 @@ html_mode(){
 }
 
 terminal_mode(){
-	printf "\n| %-25s | %-75s | %-25s | %-10s | %-5s %s\n" "SITE" "ISSUER" "EXPIRATION DAY" "DAYS LEFT" "STATUS"
+	printf "\n| %-25s | %-50s | %-25s | %-10s | %-5s %s\n" "SITE" "ISSUER" "EXPIRATION DAY" "DAYS LEFT" "STATUS"
 
 	while read site;do
 		sitename=$(echo $site | cut -d ":" -f1)
 		port=$(echo $site | cut -d ":" -f2)
 		timeout $timeout bash -c "cat < /dev/null > /dev/tcp/$sitename/$port"
 		if [ "$?" = 0 ];then
-			cert_out=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -enddate -issuer 2>/dev/null)
 			certificate_last_day=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d "=" -f2)
-			issuer=$(echo -e "$cert_out" | grep issuer= | cut -d"=" -f2- | awk -F'O =' '{print $2}' | sed 's/^ //g' | cut -c -75)
+			issuer=$(echo | openssl s_client -servername ${sitename} -connect ${site} 2>/dev/null | openssl x509 -noout -issuer | cut -c -50)
 			end_date=$(date +%s -d "$certificate_last_day")
 			days_left=$(((end_date - current_date) / 86400))
 		
 			if [ "$days_left" -gt "$warning_days" ];then
-				printf "${ok_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				printf "${ok_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Ok"
 
 			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
-				printf "${warning_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				printf "${warning_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Warning"
 
 			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
-				printf "${alert_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				printf "${alert_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Alert"
 
 			elif [ "$days_left" -le 0 ];then
-				printf "${expired_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				printf "${expired_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Expired"
 			fi
 		else
-			printf "${unknown_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+			printf "${unknown_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 			"$sitename" "n/a" "n/a" "n/a" "Unknown"
 		fi
 	done < ${sites_list} | sed '/^#/d' | sed 's/#.*//' | awk '{$$1=$$1};1'
