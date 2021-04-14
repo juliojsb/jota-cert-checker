@@ -116,7 +116,7 @@ html_mode(){
 			echo "<td style=\"padding: 8px;background-color: #999493;\">Unknown</td>" >> $html_file
 			echo "</tr>" >> $html_file
 		fi
-	done < ${sites_list}
+	done < ${sites_list} | sed '/^#/d' | sed 's/#.*//' | awk '{$$1=$$1};1'
 
 	# Close main HTML tags
 	cat <<- EOF >> $html_file
@@ -163,7 +163,7 @@ terminal_mode(){
 			printf "${unknown_color}| %-25s | %-75s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
 			"$sitename" "n/a" "n/a" "n/a" "Unknown"
 		fi
-	done < $sites_list
+	done < ${sites_list} | sed '/^#/d' | sed 's/#.*//' | awk '{$$1=$$1};1'
 
 	printf "\n %-10s" "STATUS LEGEND"
 	printf "\n ${ok_color}%-8s${end_of_color} %-30s" "Ok" "- More than ${warning_days} days left until the certificate expires"
