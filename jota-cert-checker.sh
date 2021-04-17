@@ -52,10 +52,10 @@ html_mode(){
 					<table style="background-color: #C5E1E7;padding: 10px;box-shadow: 5px 10px 18px #888888;margin-left: auto ;margin-right: auto ;border: 1px solid black;">
 					<tr style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;">
 					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Site</th>
-					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Issuer</th>
 					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Expiration date</th>
 					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Days left</th>
 					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Status</th>
+					<th style="padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;font-weight: bold;">Issuer</th>
 					</tr>
 	EOF
 
@@ -72,37 +72,37 @@ html_mode(){
 			if [ "$days_left" -gt "$warning_days" ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${sitename}</td>" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${issuer}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">Ok</td>" >> $html_file
+				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${issuer}</td>" >> $html_file
 				echo "</tr>" >> $html_file
 
 			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${sitename}</td>" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${issuer}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">Warning</td>" >> $html_file
+				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${issuer}</td>" >> $html_file
 				echo "</tr>" >> $html_file
 
 			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${sitename}</td>" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${issuer}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">Alert</td>" >> $html_file
+				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${issuer}</td>" >> $html_file
 				echo "</tr>" >> $html_file
 
 			elif [ "$days_left" -le 0 ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${sitename}</td>" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${issuer}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">Expired</td>" >> $html_file
+				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${issuer}</td>" >> $html_file
 				echo "</tr>" >> $html_file
 			fi
 		else
@@ -110,8 +110,8 @@ html_mode(){
 			echo "<td style=\"padding: 8px;background-color: #999493;\">${sitename}</td>" >> $html_file
 			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
 			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
-			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
 			echo "<td style=\"padding: 8px;background-color: #999493;\">Unknown</td>" >> $html_file
+			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
 			echo "</tr>" >> $html_file
 		fi
 	done < ${sites_list}
@@ -125,7 +125,7 @@ html_mode(){
 }
 
 terminal_mode(){
-	printf "\n| %-25s | %-50s | %-25s | %-10s | %-5s %s\n" "SITE" "ISSUER" "EXPIRATION DAY" "DAYS LEFT" "STATUS"
+	printf "\n| %-25s | %-25s | %-10s | %-8s | %-50s %s\n" "SITE" "EXPIRATION DAY" "DAYS LEFT" "STATUS" "ISSUER"
 
 	while read site;do
 		sitename=$(echo $site | cut -d ":" -f1)
@@ -138,20 +138,20 @@ terminal_mode(){
 			days_left=$(((end_date - current_date) / 86400))
 		
 			if [ "$days_left" -gt "$warning_days" ];then
-				printf "${ok_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
-				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Ok"
+				printf "${ok_color}| %-25s | %-25s | %-10s | %-8s | %-50s %s\n${end_of_color}" \
+				"$sitename" "$certificate_last_day" "$days_left" "Ok" "$issuer"
 
 			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
-				printf "${warning_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
-				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Warning"
+				printf "${warning_color}| %-25s | %-25s | %-10s | %-8s | %-50s %s\n${end_of_color}" \
+				"$sitename" "$certificate_last_day" "$days_left" "Warning" "$issuer"
 
 			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
-				printf "${alert_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
-				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Alert"
+				printf "${alert_color}| %-25s | %-25s | %-10s | %-8s | %-50s %s\n${end_of_color}" \
+				"$sitename" "$certificate_last_day" "$days_left" "Alert" "$issuer"
 
 			elif [ "$days_left" -le 0 ];then
-				printf "${expired_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
-				"$sitename" "$issuer" "$certificate_last_day" "$days_left" "Expired"
+				printf "${expired_color}| %-25s | %-25s | %-10s | %-8s | %-50s %s\n${end_of_color}" \
+				"$sitename" "$certificate_last_day" "$days_left" "Expired" "$issuer"
 			fi
 		else
 			printf "${unknown_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
