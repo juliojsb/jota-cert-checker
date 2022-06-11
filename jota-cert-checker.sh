@@ -252,6 +252,7 @@ elif [ "$#" -ne 0 ];then
 
 	# Send mail if specified
 	if [[ $mail_to ]];then
+		sed -i '/forkme/d' $html_file
 		mutt -e 'set content_type="text/html"' $mail_to -s "SSL certs expiration check" < $html_file
 	fi
 
