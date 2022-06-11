@@ -13,6 +13,7 @@
 # VARIABLES
 #
 
+script_path=$(dirname $(realpath -s $0))
 sites_list="$1"
 timeout="5"
 sitename="${sitename:-}"
@@ -190,6 +191,8 @@ howtouse(){
 # 
 # MAIN
 # 
+
+cd "$script_path"
 
 if [ "$#" -eq 0 ];then
 	howtouse
