@@ -16,7 +16,7 @@
 script_path=$(dirname $(realpath -s $0))
 sites_list="$1"
 timeout="5"
-show_port="true"
+show_port="false"
 sitename="${sitename:-}"
 html_file="${html_file:-certs_check.html}"
 img_file="${img_file:-certs_check.jpg}"
