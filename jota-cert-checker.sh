@@ -16,6 +16,7 @@
 script_path=$(dirname $(realpath -s $0))
 sites_list="$1"
 timeout="5"
+show_port="true"
 sitename="${sitename:-}"
 html_file="${html_file:-certs_check.html}"
 img_file="${img_file:-certs_check.jpg}"
@@ -70,7 +71,11 @@ html_mode(){
 
 			if [ "$days_left" -gt "$warning_days" ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${sitename}</td>" >> $html_file
+				if [ "$show_port" == "true" ];then
+					echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${sitename}:${port}</td>" >> $html_file
+				else
+					echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${sitename}</td>" >> $html_file
+				fi
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #33FF4F;\">Ok</td>" >> $html_file
@@ -78,7 +83,11 @@ html_mode(){
 
 			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${sitename}</td>" >> $html_file
+				if [ "$show_port" == "true" ];then
+					echo "<td style=\"padding: 8px;background-color: #FFE032;\">${sitename}:${port}</td>" >> $html_file
+				else
+					echo "<td style=\"padding: 8px;background-color: #FFE032;\">${sitename}</td>" >> $html_file
+				fi
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FFE032;\">Warning</td>" >> $html_file
@@ -86,7 +95,11 @@ html_mode(){
 
 			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${sitename}</td>" >> $html_file
+				if [ "$show_port" == "true" ];then
+					echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${sitename}:${port}</td>" >> $html_file
+				else
+					echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${sitename}</td>" >> $html_file
+				fi
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #FF8F32;\">Alert</td>" >> $html_file
@@ -94,7 +107,11 @@ html_mode(){
 
 			elif [ "$days_left" -le 0 ];then
 				echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
-				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${sitename}</td>" >> $html_file
+				if [ "$show_port" == "true" ];then
+					echo "<td style=\"padding: 8px;background-color: #EF3434;\">${sitename}:${port}</td>" >> $html_file
+				else
+					echo "<td style=\"padding: 8px;background-color: #EF3434;\">${sitename}</td>" >> $html_file
+				fi
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${certificate_last_day}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">${days_left}</td>" >> $html_file
 				echo "<td style=\"padding: 8px;background-color: #EF3434;\">Expired</td>" >> $html_file
@@ -102,7 +119,11 @@ html_mode(){
 			fi
 		else
 			echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
-			echo "<td style=\"padding: 8px;background-color: #999493;\">${sitename}</td>" >> $html_file
+			if [ "$show_port" == "true" ];then
+				echo "<td style=\"padding: 8px;background-color: #999493;\">${sitename}:${port}</td>" >> $html_file
+			else
+				echo "<td style=\"padding: 8px;background-color: #999493;\">${sitename}</td>" >> $html_file
+			fi
 			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
 			echo "<td style=\"padding: 8px;background-color: #999493;\">n/a</td>" >> $html_file
 			echo "<td style=\"padding: 8px;background-color: #999493;\">Unknown</td>" >> $html_file
@@ -131,24 +152,48 @@ terminal_mode(){
 			days_left=$(((end_date - current_date) / 86400))
 		
 			if [ "$days_left" -gt "$warning_days" ];then
-				printf "${ok_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
-				"$sitename" "$certificate_last_day" "$days_left" "Ok"
+				if [ "$show_port" == "true" ];then
+					printf "${ok_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"${sitename}:${port}" "$certificate_last_day" "$days_left" "Ok"
+				else
+					printf "${ok_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"$sitename" "$certificate_last_day" "$days_left" "Ok"
+				fi
 
 			elif [ "$days_left" -le "$warning_days" ] && [ "$days_left" -gt "$alert_days" ];then
-				printf "${warning_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
-				"$sitename" "$certificate_last_day" "$days_left" "Warning"
+				if [ "$show_port" == "true" ];then
+					printf "${warning_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"${sitename}:${port}" "$certificate_last_day" "$days_left" "Warning"
+				else
+					printf "${warning_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"$sitename" "$certificate_last_day" "$days_left" "Warning"
+				fi
 
 			elif [ "$days_left" -le "$alert_days" ] && [ "$days_left" -gt 0 ];then
-				printf "${alert_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
-				"$sitename" "$certificate_last_day" "$days_left" "Alert"
-
+				if [ "$show_port" == "true" ];then
+					printf "${alert_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"${sitename}:${port}" "$certificate_last_day" "$days_left" "Alert"
+				else
+					printf "${alert_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"$sitename" "$certificate_last_day" "$days_left" "Alert"
+				fi
 			elif [ "$days_left" -le 0 ];then
-				printf "${expired_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
-				"$sitename" "$certificate_last_day" "$days_left" "Expired"
+				if [ "$show_port" == "true" ];then
+					printf "${expired_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"${sitename}:${port}" "$certificate_last_day" "$days_left" "Expired"
+				else
+					printf "${expired_color}| %-25s | %-25s | %-10s | %-8s %s\n${end_of_color}" \
+					"$sitename" "$certificate_last_day" "$days_left" "Expired"
+				fi
 			fi
 		else
-			printf "${unknown_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
-			"$sitename" "n/a" "n/a" "n/a"
+			if [ "$show_port" == "true" ];then
+				printf "${unknown_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				"${sitename}:${port}" "n/a" "n/a" "n/a"
+			else
+				printf "${unknown_color}| %-25s | %-50s | %-25s | %-10s | %-5s %s\n${end_of_color}" \
+				"$sitename" "n/a" "n/a" "n/a"
+			fi				
 		fi
 	done < ${sites_list} 
 
