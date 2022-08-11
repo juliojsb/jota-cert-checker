@@ -1,0 +1,1 @@
+0 8 * * * /home/jota/jota-cert-checker.sh -f sitelist -o html -m mail@example.com
