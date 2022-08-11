@@ -69,3 +69,56 @@ Also in HTML mode and sending the result to a slack channel:
 ```bash
 ./jota-cert-checker.sh -f sitelist -o html -s my_slack_channel
 ```
+
+## Docker
+You can also use this script inside a docker container. Just modify the following files as you need:
+
+* `ssmpt.conf`: specify the mail server (I included gmail as example), mail account and password.
+* `crontab.txt`: specify the mail account and crontab config. By default the script runs everyday at 08AM
+
+### Build & Run
+
+Once you hace customized the config files, build the image:
+```bash
+docker build -t jota-cert-checker .
+```
+Then run it:
+```bash
+docker run --name jota-cert-checker -d jota-cert-checker
+```
+Once running, you an enter the container and operate as you need:
+```bash
+docker exec -it jota-cert-checker bash
+```
+```bash
+bash-5.1# crontab -l
+0 8 * * * /home/jota/jota-cert-checker.sh -f sitelist -o html -m mail@example.com
+bash-5.1# ./jota-cert-checker.sh -f sitelist -o terminal
+
+| SITE                      | EXPIRATION DAY            | DAYS LEFT  | STATUS   
+| linux.com                 | Oct 19 00:02:05 2022 GMT  | 68         | Alert    
+| kernel.org                | Oct 17 18:03:22 2022 GMT  | 66         | Alert    
+| gnu.org                   | Sep 14 22:42:29 2022 GMT  | 34         | Alert    
+| debian.org                | Nov  9 00:15:51 2022 GMT  | 89         | Alert    
+| ubuntu.com                | Oct 16 10:20:35 2022 GMT  | 65         | Alert    
+| github.com                | Mar 15 23:59:59 2023 GMT  | 216        | Warning  
+| google.es                 | Oct 10 08:27:29 2022 GMT  | 59         | Alert    
+| redhat.com                | Mar 29 23:59:59 2023 GMT  | 230        | Warning  
+| superuser.com             | Oct 18 16:09:00 2022 GMT  | 67         | Alert    
+| youtube.com               | Oct 10 08:18:56 2022 GMT  | 59         | Alert    
+| stackoverflow.com         | Oct 18 16:09:00 2022 GMT  | 67         | Alert    
+| stackexchange.com         | Oct 18 16:09:00 2022 GMT  | 67         | Alert    
+| wikipedia.org             | Nov 17 23:59:59 2022 GMT  | 98         | Alert    
+| python.org                | Oct 24 15:59:15 2022 GMT  | 73         | Alert    
+| codecademy.com            | Jul 11 23:59:59 2023 GMT  | 334        | Ok       
+| packtpub.com              | May  7 23:59:59 2023 GMT  | 269        | Warning  
+| reddit.com                | Dec 30 23:59:59 2022 GMT  | 141        | Alert    
+| mysql.com                 | Feb 25 23:59:59 2023 GMT  | 198        | Warning  
+
+ STATUS LEGEND
+ Ok       - More than 300 days left until the certificate expires
+ Warning  - The certificate will expire in less than 300 days
+ Alert    - The certificate will expire in less than 150 days
+ Expired  - The certificate has already expired
+ Unknown  - The site with defined port could not be reached
+```
