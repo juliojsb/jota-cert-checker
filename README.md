@@ -86,7 +86,7 @@ Then run it:
 ```bash
 docker run --name jota-cert-checker -d jota-cert-checker
 ```
-Once running, you an enter the container and operate as you need:
+Once running, you can enter the container and operate as you need:
 ```bash
 docker exec -it jota-cert-checker bash
 ```
