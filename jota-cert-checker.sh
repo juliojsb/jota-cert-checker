@@ -131,6 +131,29 @@ html_mode(){
 		fi
 	done < ${sites_list}
 
+	echo "<table style=\"background-color: #C5E1E7;padding: 10px;box-shadow: 5px 10px 18px #888888;margin-left: auto ;margin-right: auto ;border: 1px solid black;\">" >> $html_file
+	echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #33FF4F;\">Ok</td>" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #33FF4F;\">More than ${warning_days} days left until the certificate expires</td>" >> $html_file
+	echo "</tr>" >> $html_file
+	echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #FFE032;\">Warning</td>" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #FFE032;\">The certificate will expire in less than ${warning_days} days</td>" >> $html_file
+	echo "</tr>" >> $html_file
+	echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #FF8F32;\">Alert</td>" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #FF8F32;\">The certificate will expire in less than ${alert_days} days</td>" >> $html_file
+	echo "</tr>" >> $html_file
+	echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #EF3434;\">Expired</td>" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #EF3434;\">The certificate has already expired</td>" >> $html_file
+	echo "</tr>" >> $html_file
+	echo "<tr style=\"padding: 8px;text-align: left;font-family: 'Helvetica Neue', sans-serif;\">" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #999493;\">Unknown</td>" >> $html_file
+	echo "<td style=\"padding: 8px;background-color: #999493;\">The site with defined port could not be reached</td>" >> $html_file
+	echo "</tr>" >> $html_file
+	echo "</table>" >> $html_file
+
 	# Close main HTML tags
 	cat <<- EOF >> $html_file
 			</table>
